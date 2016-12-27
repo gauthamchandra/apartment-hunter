@@ -2,6 +2,7 @@ var fetch = require('node-fetch')
   , Promise = global.Promise
   , cheerio = require('cheerio')
   , feedparser = require('feedparser-promised')
+  , CraigslistQuery = require('./craigslist_query.js')
   , CraigslistPost = require('./craigslist_post.js');
 
 const MAC_USER_AGENT = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/55.0.2883.95 Safari/537.36';
@@ -18,12 +19,13 @@ const fetchOptions = {
 };
 
 class CraigslistProvider {
-  constructor(query) {
-    if (!query || query.length === 0) {
+  constructor(cquery) {
+    if (!cquery || !(cquery instanceof CraigslistQuery)) {
       throw new Error('Need a valid query url to proceed!');
     }
 
-    this._query = query;
+    this._query = cquery.getQueryUrl();
+    this._exclusionCriteria = cquery.getExclusionFilters();
     this._feedResults = [];
     this._promise = null;
   }
@@ -44,7 +46,8 @@ class CraigslistProvider {
 
           Promise.all(postPromises)
             .then(posts => {
-              resolve(posts);
+              // exclude any posts that meet the exclusion criteria
+              resolve(this.filterByExclusionCriteria(posts));
             }).catch(error => {
               reject(error);
             });
@@ -72,8 +75,13 @@ class CraigslistProvider {
           const $ = cheerio.load(body);
           let latitude = $('#map').attr('data-latitude');
           let longitude = $('#map').attr('data-longitude');
+          let summary = $('#postingbody').text();
           
           post.setLocation(latitude, longitude);
+
+          if (summary) {
+            post.setBody(summary);
+          }
 
           resolve(post);
         }).catch(error => {
@@ -82,6 +90,30 @@ class CraigslistProvider {
     });
 
     return promise;
+  }
+
+  /**
+   * Applies exclusion criteria and filters
+   * the results. If no filters were specified,
+   * then the original set is returned
+   * */
+  filterByExclusionCriteria(posts) {
+    if (this._exclusionCriteria.length === 0) {
+      return posts;
+    }
+    else {
+      return posts.filter(post => {
+        for (let i = 0; i < this._exclusionCriteria.length; i++) {
+          var exclusionFilter = this._exclusionCriteria[i];
+
+          if (post.getBody().indexOf(exclusionFilter) >= 0) {
+            return false;
+          }
+        }
+
+        return true;
+      });
+    }
   }
 }
 

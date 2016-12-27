@@ -1,4 +1,5 @@
-var querystring = require('querystring');
+var querystring = require('querystring')
+  , CraigslistQuery = require('./craigslist_query.js');
 
 class CraigslistQueryBuilder {
   constructor() {
@@ -7,6 +8,11 @@ class CraigslistQueryBuilder {
 
   setLocation(loc) {
     this.location = loc;
+    return this;
+  }
+
+  setExclusionFilters(exclusionStrings) {
+    this.exclusionFilters = exclusionStrings;
     return this;
   }
 
@@ -37,7 +43,8 @@ class CraigslistQueryBuilder {
   }
 
   build() {
-    return `http:\/\/${this.location}.craigslist.org/search/aap?${querystring.stringify(this.options)}`;
+    let queryUrl = `http:\/\/${this.location}.craigslist.org/search/aap?${querystring.stringify(this.options)}`;
+    return new CraigslistQuery(queryUrl, this.exclusionFilters);
   }
 }
 

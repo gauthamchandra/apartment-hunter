@@ -9,6 +9,7 @@ var query = new CraigslistQueryBuilder()
   .filterToPostsWithImages()
   .filterToApartments()
   .bundleDuplicates()
+  .setExclusionFilters(['roommates'])
   .build();
 
 console.log('Fetching data using query:', query); 

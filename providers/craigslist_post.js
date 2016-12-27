@@ -11,6 +11,14 @@ class CraigslistPost {
     this.latitude = latitude;
     this.longitude = longitude;
   }
+
+  setBody(body) {
+    this.summary = body;
+  }
+
+  getBody() {
+    return this.summary;
+  }
 }
 
 module.exports = CraigslistPost;
