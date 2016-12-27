@@ -1,3 +1,6 @@
+# Don't commit env vars that might contain API keys
+env.json
+
 # Logs
 logs
 *.log

@@ -1,0 +1,29 @@
+{
+  "name": "apartment-hunter",
+  "version": "0.5.0",
+  "description": "A simple nodeJS app that helps to find apartments close to public transportation and work",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/gauthamchandra/apartment-hunter.git"
+  },
+  "keywords": [
+    "apartment",
+    "craigslist",
+    "transit"
+  ],
+  "author": "Gautham Chandra",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/gauthamchandra/apartment-hunter/issues"
+  },
+  "homepage": "https://github.com/gauthamchandra/apartment-hunter",
+  "dependencies": {
+    "cheerio": "^0.22.0",
+    "feedparser-promised": "^1.1.1",
+    "node-fetch": "^1.6.3"
+  }
+}
