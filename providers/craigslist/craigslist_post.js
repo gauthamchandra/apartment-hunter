@@ -6,6 +6,9 @@ class CraigslistPost {
     this.link = feedElement.link;
     this.date = new Date(feedElement.date);
 
+    // make sure to save the meta attributes
+    this.meta = feedElement.meta;
+
     // will be set later
     this.transitTime = null;
     this.price = null;

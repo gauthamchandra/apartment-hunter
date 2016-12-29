@@ -1,3 +1,5 @@
+var SyndicationInfo = require('../syndication_info.js');
+
 class CraigslistFeed {
   /**
    * @param items {Array<CraigslistPost>} - the craigslist posts
@@ -5,10 +7,17 @@ class CraigslistFeed {
    * */
   constructor(items, transitInfoProvider) {
     this._items = items || [];
+
     this._transitInfoProvider = transitInfoProvider;
 
     if (!this._transitInfoProvider) {
       throw new Error('a TransitInfoProvider instance must be provided!');
+    }
+
+    // grab the syndication info containing when to update the feed
+    // every post has the metadata so grab it from the first item
+    if (this._items.length > 0) {
+      this._syndicationInfo = new SyndicationInfo(this._items[0]);
     }
   }
 
