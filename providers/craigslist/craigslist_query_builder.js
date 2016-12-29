@@ -16,6 +16,23 @@ class CraigslistQueryBuilder {
     return this;
   }
 
+  setMinimumPrice(price) {
+    if (typeof price === 'number' &&
+        price >= 0) {
+      this.options.min_price = price;
+    }
+    return this;
+  }
+
+  setMaximumPrice(price) {
+    if (typeof price === 'number' &&
+        price >= 0) {
+      this.options.max_price = price;
+    }
+
+    return this;
+  }
+
   setMinimumBedrooms(num) {
     this.options.bedrooms = num;
     return this;
@@ -34,6 +51,22 @@ class CraigslistQueryBuilder {
 
   filterToApartments() {
     this.options.housing_type = 1;
+    return this;
+  }
+
+  /**
+   * Used to specify a search radius
+   *
+   * @param zipcode - the specified center of the search radius
+   * @param miles - the number of miles
+   * */
+  within(zipcode, miles) {
+    if (typeof zipcode === 'number' &&
+        typeof miles === 'number') {
+      this.options.postal = zipcode;
+      this.options.search_distance = miles;
+    }
+
     return this;
   }
 

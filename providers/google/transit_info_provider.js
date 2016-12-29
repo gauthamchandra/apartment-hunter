@@ -16,7 +16,14 @@ class TransitInfoProvider {
         destinations: [destLatLng]
       }).asPromise().then(resp => {
         if (resp.status === 200) {
-          resolve(resp.json.rows[0].elements[0].duration.value);
+          let result = resp.json.rows[0].elements[0];
+
+          if (result && result.status === 'OK') {
+            resolve(resp.json.rows[0].elements[0].duration.value);
+          }
+          else {
+            resolve(null);
+          }
         }
         else {
           reject(resp.status);

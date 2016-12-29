@@ -5,11 +5,17 @@ class CraigslistPost {
     this.summary = feedElement.summary;
     this.link = feedElement.link;
     this.date = new Date(feedElement.date);
+
+    // will be set later
+    this.transitTime = null;
+    this.price = null;
   }
 
   setLocation(latitude, longitude) {
-    this.latitude = latitude;
-    this.longitude = longitude;
+    this.location = {
+      lat: latitude,
+      lng: longitude
+    };
   }
 
   setBody(body) {

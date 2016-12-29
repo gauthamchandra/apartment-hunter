@@ -76,8 +76,10 @@ class CraigslistProvider {
           let latitude = $('#map').attr('data-latitude');
           let longitude = $('#map').attr('data-longitude');
           let summary = $('#postingbody').text();
+          let price = $('.price').text();
           
           post.setLocation(latitude, longitude);
+          post.price = price;
 
           if (summary) {
             post.setBody(summary);

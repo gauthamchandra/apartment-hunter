@@ -2,9 +2,9 @@
 
 var env = require('./env.json')
   , Promise = global.Promise
-  , CraigslistQueryBuilder = require('./providers/craigslist_query_builder.js')
-  , CraigslistProvider = require('./providers/craigslist_provider.js')
-  , TransitInfoProvider = require('./providers/transit_info_provider.js');
+  , CraigslistQueryBuilder = require('./providers/craigslist/craigslist_query_builder.js')
+  , CraigslistProvider = require('./providers/craigslist/craigslist_provider.js')
+  , TransitInfoProvider = require('./providers/google/transit_info_provider.js');
 
 var query = new CraigslistQueryBuilder()
   .setLocation('newyork')
@@ -15,14 +15,6 @@ var query = new CraigslistQueryBuilder()
   .setExclusionFilters(['roommates'])
   .build();
 
-console.log('Fetching data using query:', query); 
-
-//new CraigslistProvider(query)
-//  .fetchFeed()
-//  .then(posts => {
-//    console.log(posts[0]);
-//  });
-//
 
 var transitInfoProvider = new TransitInfoProvider(env.GOOGLE_MAPS_API_KEY);
 
