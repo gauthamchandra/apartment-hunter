@@ -3,6 +3,7 @@ var fetch = require('node-fetch')
   , cheerio = require('cheerio')
   , feedparser = require('feedparser-promised')
   , CraigslistQuery = require('./craigslist_query.js')
+  , CraigslistFeed = require('./craigslist_feed.js')
   , CraigslistPost = require('./craigslist_post.js');
 
 const MAC_USER_AGENT = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/55.0.2883.95 Safari/537.36';
@@ -19,7 +20,11 @@ const fetchOptions = {
 };
 
 class CraigslistProvider {
-  constructor(cquery) {
+  /**
+   * @param cquery {CraigslistQuery}
+   * @param transitInfoProvider {TransitInfoProvider}
+   * */
+  constructor(cquery, transitInfoProvider) {
     if (!cquery || !(cquery instanceof CraigslistQuery)) {
       throw new Error('Need a valid query url to proceed!');
     }
@@ -28,6 +33,7 @@ class CraigslistProvider {
     this._exclusionCriteria = cquery.getExclusionFilters();
     this._feedResults = [];
     this._promise = null;
+    this._transitInfoProvider = transitInfoProvider;
   }
 
   /**
@@ -47,7 +53,9 @@ class CraigslistProvider {
           Promise.all(postPromises)
             .then(posts => {
               // exclude any posts that meet the exclusion criteria
-              resolve(this.filterByExclusionCriteria(posts));
+              resolve(new CraigslistFeed(
+                    this.filterByExclusionCriteria(posts),
+                    this._transitInfoProvider));
             }).catch(error => {
               reject(error);
             });
