@@ -1,5 +1,6 @@
-# Don't commit env vars that might contain API keys
+# Anything containing personal info or API keys
 env.json
+query.json
 
 # Logs
 logs

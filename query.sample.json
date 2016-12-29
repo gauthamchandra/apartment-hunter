@@ -1,0 +1,13 @@
+{
+  "region": "newyork",
+  "min_price": 1000,
+  "max_price": 3600,
+  "min_bathrooms": 1,
+  "min_bedrooms": 1,
+  "search_postal_code": 10027,
+  "search_radius": 5,
+  "apartments_only": true,
+  "bundle_duplicates": true,
+  "posts_with_images_only": true,
+  "exclude": ["bedbugs"]
+}
