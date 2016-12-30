@@ -3,7 +3,10 @@ const Schema = mongoose.Schema;
 
 // define db schema
 const CraigslistPostSchema = new Schema({
-  title: String,
+  title: {
+    type: String,
+    required: true
+  },
   body: String,
   link: {
     type: String,
@@ -13,7 +16,12 @@ const CraigslistPostSchema = new Schema({
   latitude: Number,
   longitude: Number,
   markedSeen: Boolean,
-  lastUpdated: Date
+  lastUpdated: {
+    type: Date,
+    required: true
+  }
+}, {
+  strict: true
 });
 
 // compile the schema and encapsulate it into a Model type

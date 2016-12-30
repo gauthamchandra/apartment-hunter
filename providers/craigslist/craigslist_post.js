@@ -40,7 +40,7 @@ class CraigslistPost {
   getModel() {
     return new CraigslistPostModel({
       title: this.title,
-      summary: this.getBody(),
+      body: this.getBody(),
       link: this.link,
       latitude: this.location.lat,
       longitude: this.location.lng,
