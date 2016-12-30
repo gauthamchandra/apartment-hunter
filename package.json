@@ -4,6 +4,7 @@
   "description": "A simple nodeJS app that helps to find apartments close to public transportation and work",
   "main": "index.js",
   "scripts": {
+    "start": "node index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
