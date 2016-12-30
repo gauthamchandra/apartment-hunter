@@ -44,9 +44,6 @@ class PersistenceProvider {
    * @param posts {CraigslistPost}
    * */
   createOrUpdateAll(posts) {
-    console.log('Saving Posts: ', posts.length);
-
-
     return new Promise((resolve, reject) => {
       let savePromises = [];
 
@@ -64,8 +61,6 @@ class PersistenceProvider {
   }
 
   getAllPosts() {
-    console.log('Retrieving from DB:');
-
     return new Promise((resolve, reject) => {
       CraigslistPostModel
         .find({}).then(postModels => {

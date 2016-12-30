@@ -31,6 +31,10 @@ class CraigslistPost {
     return this.summary;
   }
 
+  getOriginalQuery() {
+    return this.meta.link;
+  }
+
   /**
    * Returns a mongoose model object with the required data
    * to persist to the database.
@@ -39,6 +43,7 @@ class CraigslistPost {
    * */
   getModel() {
     return new CraigslistPostModel({
+      searchQuery: this.getOriginalQuery(),
       title: this.title,
       body: this.getBody(),
       link: this.link,

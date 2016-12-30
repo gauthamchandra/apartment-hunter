@@ -1,8 +1,13 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
-// define db schema
 const CraigslistPostSchema = new Schema({
+  // associate the post with a search query
+  searchQuery: {
+    type: String,
+    required: true,
+    index: true
+  },
   title: {
     type: String,
     required: true
@@ -20,8 +25,6 @@ const CraigslistPostSchema = new Schema({
     type: Date,
     required: true
   }
-}, {
-  strict: true
 });
 
 // compile the schema and encapsulate it into a Model type
