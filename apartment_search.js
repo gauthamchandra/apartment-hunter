@@ -39,7 +39,6 @@ class ApartmentSearch {
 
   _saveToDb(posts) {
     log('Connecting to the DB');
-    log('posts:', posts);
 
     return new PromiseUtil().inSeries(
         this.persistenceProvider.connect,
@@ -51,47 +50,46 @@ class ApartmentSearch {
   }
 
   search() {
-    log('Constructing craigslist query from file...');
-    this._readQueryFromFile();
+    var craigslistFeed = null;
 
-    log('Constructing TransitInfoProvider...');
-    var transitInfoProvider = new TransitInfoProvider(env.GOOGLE_MAPS_API_KEY);
+    return new PromiseUtil().inSeries(
+        () => {
+          log('Constructing craigslist query from file...');
+          this._readQueryFromFile();
 
-    log('Querying Craigslist Feed for data...');
+          log('Constructing TransitInfoProvider...');
+          var transitInfoProvider = new TransitInfoProvider(env.GOOGLE_MAPS_API_KEY);
 
-    new CraigslistProvider(this.query, transitInfoProvider)
-      .fetchFeed()
-      .then(feed => {
-        log('Finding out the transit times for each of the posts');
+          log('Querying Craigslist Feed for data...');
+          return new CraigslistProvider(this.query, transitInfoProvider).fetchFeed();
+        },
+        (feed) => {
+          craigslistFeed = feed;
 
-        feed.getTransitTimesTo(env.work_address)
-          .then(() => {
-            var posts = feed.getPosts();
+          log('Finding out the transit times for each of the posts');
+          return feed.getTransitTimesTo(env.work_address);
+        },
+        () => {
+          var posts = craigslistFeed.getPosts();
 
-            log('Filtering out transit times > 45 minutes');
+          log('Sorting results by price');
+          craigslistFeed.sortByPrice();
 
-            feed.sortByPrice();
-
-            posts = feed.getPosts()
-              .filter(post => {
-                return post.transitTime / 60 < 45 ||
-                  post.transitTime === null;
-              });
-
-            this._saveToDb(posts).then(() => {
-              this.persistenceProvider.getAllPosts().then(() => {
-                log('Disconnecting from DB');
-                this.persistenceProvider.disconnect();
-              }).catch((error) => {
-                logError('Encountered an error when trying to fetch posts', error);
-                log('Proceeding anyway to disconnect from DB');
-                this.persistenceProvider.disconnect();
-              });
-            }).catch((error) => {
-              logError('Encountered error', error);
+          log('Filtering out transit times > 45 minutes');
+          posts = craigslistFeed.getPosts()
+            .filter(post => {
+              return post.transitTime / 60 < 45 ||
+                post.transitTime === null;
             });
-          });
-      });
+
+          return this._saveToDb(posts);
+        },
+        this.persistenceProvider.getAllPosts).then(() => {
+          log('Disconnecting from DB');
+          this.persistenceProvider.disconnect();
+        }).catch((error) => {
+          logError('Encountered error', error);
+        });
   }
 }
 
