@@ -3,8 +3,7 @@ var env = require('./env.json')
   , PromiseUtil = require('./promise_util.js')
   , CraigslistQueryBuilder = require('./providers/craigslist/craigslist_query_builder.js')
   , CraigslistProvider = require('./providers/craigslist/craigslist_provider.js')
-  , TransitInfoProvider = require('./providers/google/transit_info_provider.js')
-  , PersistenceProvider = require('./providers/persistence_provider.js');
+  , TransitInfoProvider = require('./providers/google/transit_info_provider.js');
 
 /**
  * A wrapper around the Console
@@ -28,25 +27,12 @@ class ApartmentSearch {
     loggingEnabled = verbose;
 
     this.query = null;
-    this.persistenceProvider = new PersistenceProvider();
   }
 
   _readQueryFromFile() {
     this.query = new CraigslistQueryBuilder()
       .readFromFile('query.json')
       .build();
-  }
-
-  _saveToDb(posts) {
-    log('Connecting to the DB');
-
-    return new PromiseUtil().inSeries(
-        this.persistenceProvider.connect,
-        () => {
-          log('Connected');
-          log('Saving relevant post results to the db');
-          this.persistenceProvider.createOrUpdateAll(posts);
-        });
   }
 
   search() {
@@ -82,13 +68,7 @@ class ApartmentSearch {
                 post.transitTime === null;
             });
 
-          return this._saveToDb(posts);
-        },
-        this.persistenceProvider.getAllPosts).then(() => {
-          log('Disconnecting from DB');
-          this.persistenceProvider.disconnect();
-        }).catch((error) => {
-          logError('Encountered error', error);
+          return Promise.resolve(posts);
         });
   }
 }
