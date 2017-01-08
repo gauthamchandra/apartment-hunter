@@ -1,13 +1,15 @@
-var rootRelativeRequire = require('rfr')
-  , PromiseUtil = rootRelativeRequire('app/promise_util')
-  , CraigslistPostModel = rootRelativeRequire('app/providers/craigslist/craigslist_post_model')
-  , PersistenceProvider = rootRelativeRequire('app/providers/persistence_provider')
-  , ApartmentSearch = rootRelativeRequire('app/apartment_search')
-  , SlackMessageBuilder = rootRelativeRequire('app/notifiers/slack_message_builder')
-  , SlackNotifier = rootRelativeRequire('app/notifiers/slack_notifier')
-  , env = rootRelativeRequire('env.json');
+const rootRelativeRequire = require('rfr')
+    , PromiseUtil = rootRelativeRequire('app/promise_util')
+    , CraigslistPostModel = rootRelativeRequire('app/providers/craigslist/craigslist_post_model')
+    , PersistenceProvider = rootRelativeRequire('app/providers/persistence_provider')
+    , ApartmentSearch = rootRelativeRequire('app/apartment_search')
+    , SlackMessageBuilder = rootRelativeRequire('app/notifiers/slack_message_builder')
+    , SlackNotifier = rootRelativeRequire('app/notifiers/slack_notifier')
+    , env = rootRelativeRequire('env.json')
+    , log = require('npmlog')
+    , TAG = 'main';
 
-var apartmentSearch = new ApartmentSearch(true)
+var apartmentSearch = new ApartmentSearch()
   , persistenceProvider = new PersistenceProvider()
   , job = null
   , fetchedPosts;
@@ -17,16 +19,16 @@ new PromiseUtil().inSeries(
     (posts) => {
       fetchedPosts = posts;
 
-      log('Connecting to the DB');
-      return this.persistenceProvider.connect();
+      log.info(TAG, 'Connecting to the DB');
+      return persistenceProvider.connect();
     },
     () => {
-      log('Connected');
-      log('Saving relevant post results to the db');
-      return this.persistenceProvider.createOrUpdateAll(fetchedPosts);
+      log.info(TAG, 'Connected');
+      log.info(TAG, 'Saving relevant post results to the db');
+      return persistenceProvider.createOrUpdateAll(fetchedPosts);
     },
     () => {
-      log('Retrieving posts updated in the last 5 minutes');
+      log.info(TAG, 'Retrieving posts updated in the last 5 minutes');
 
       var now = Date.now();
       var FIVE_MIN_AGO = new Date(now.getTime() - (1000 * 60 * 5));
@@ -35,9 +37,9 @@ new PromiseUtil().inSeries(
       });
     },
     () => {
-      log('Disconnecting from DB');
-      return this.persistenceProvider.disconnect();
+      log.info(TAG, 'Disconnecting from DB');
+      return persistenceProvider.disconnect();
     })
 .catch(error => {
-  console.error('Encountered an error during main program execution:', error);
+  log.error(TAG, 'Encountered an error during main program execution:', error);
 });

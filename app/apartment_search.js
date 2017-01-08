@@ -1,33 +1,16 @@
 var rootRelativeRequire = require('rfr')
   , env = rootRelativeRequire('env.json')
   , es6BindAll = require('es6bindall')
+  , log = require('npmlog')
   , Promise = global.Promise
   , PromiseUtil = rootRelativeRequire('app/promise_util')
   , CraigslistQueryBuilder = rootRelativeRequire('app/providers/craigslist/craigslist_query_builder')
   , CraigslistProvider = rootRelativeRequire('app/providers/craigslist/craigslist_provider')
-  , TransitInfoProvider = rootRelativeRequire('app/providers/google/transit_info_provider');
-
-/**
- * A wrapper around the Console
- * */  
-var loggingEnabled = false;
-
-function log() {
-  if (loggingEnabled) {
-    console.log.apply(this, arguments);
-  }
-};
-
-function logError() {
-  if (loggingEnabled) {
-    console.error.apply(this, arguments);
-  }
-}
+  , TransitInfoProvider = rootRelativeRequire('app/providers/google/transit_info_provider')
+  , TAG = 'ApartmentSearch';
 
 class ApartmentSearch {
-  constructor(verbose = true) {
-    loggingEnabled = verbose;
-
+  constructor() {
     this.query = null;
 
     es6BindAll(this, ['_readQueryFromFile', 'search']);
@@ -44,28 +27,28 @@ class ApartmentSearch {
 
     return new PromiseUtil().inSeries(
         () => {
-          log('Constructing craigslist query from file...');
+          log.info(TAG, 'Constructing craigslist query from file...');
           this._readQueryFromFile();
 
-          log('Constructing TransitInfoProvider...');
+          log.info(TAG, 'Constructing TransitInfoProvider...');
           var transitInfoProvider = new TransitInfoProvider(env.GOOGLE_MAPS_API_KEY);
 
-          log('Querying Craigslist Feed for data...');
+          log.info(TAG, 'Querying Craigslist Feed for data...');
           return new CraigslistProvider(this.query, transitInfoProvider).fetchFeed();
         },
         (feed) => {
           craigslistFeed = feed;
 
-          log('Finding out the transit times for each of the posts');
+          log.info(TAG, 'Finding out the transit times for each of the posts');
           return feed.getTransitTimesTo(env.work_address);
         },
         () => {
           var posts = craigslistFeed.getPosts();
 
-          log('Sorting results by price');
+          log.info(TAG, 'Sorting results by price');
           craigslistFeed.sortByPrice();
 
-          log('Filtering out transit times > 45 minutes');
+          log.info(TAG, 'Filtering out transit times > 45 minutes');
           posts = craigslistFeed.getPosts()
             .filter(post => {
               return post.transitTime / 60 < 45 ||

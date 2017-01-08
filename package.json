@@ -29,6 +29,7 @@
     "feedparser-promised": "^1.1.1",
     "mongoose": "^4.7.5",
     "node-fetch": "^1.6.3",
+    "npmlog": "^4.0.2",
     "rfr": "^1.2.3"
   }
 }
