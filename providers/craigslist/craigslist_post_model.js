@@ -21,10 +21,12 @@ const CraigslistPostSchema = new Schema({
   latitude: Number,
   longitude: Number,
   markedSeen: Boolean,
-  lastUpdated: {
+  postLastUpdated: {
     type: Date,
     required: true
   }
+}, {
+  timestamps: true
 });
 
 // compile the schema and encapsulate it into a Model type

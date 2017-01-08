@@ -25,6 +25,15 @@ new PromiseUtil().inSeries(
       return this.persistenceProvider.createOrUpdateAll(fetchedPosts);
     },
     () => {
+      log('Retrieving posts updated in the last 5 minutes');
+
+      var now = Date.now();
+      var FIVE_MIN_AGO = new Date(now.getTime() - (1000 * 60 * 5));
+      CraigslistPostModel.where('updatedAt').gt(FIVE_MIN_AGO).then(models => {
+        log('Posts updated within the last 5 min:', posts.length);
+      });
+    },
+    () => {
       log('Disconnecting from DB');
       return this.persistenceProvider.disconnect();
     })

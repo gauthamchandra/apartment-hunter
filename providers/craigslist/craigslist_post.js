@@ -50,7 +50,7 @@ class CraigslistPost {
       latitude: this.location.lat,
       longitude: this.location.lng,
       markedSeen: false,
-      lastUpdated: this.date
+      postLastUpdated: this.date
     });
   }
 }
