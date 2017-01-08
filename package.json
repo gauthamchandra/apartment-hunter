@@ -1,6 +1,6 @@
 {
   "name": "apartment-hunter",
-  "version": "0.5.0",
+  "version": "0.8.0",
   "description": "A simple nodeJS app that helps to find apartments close to public transportation and work",
   "main": "app/index.js",
   "scripts": {

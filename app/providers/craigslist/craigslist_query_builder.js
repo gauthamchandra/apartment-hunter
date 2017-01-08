@@ -1,4 +1,4 @@
-var path = require('path')
+var rootRelativeRequire = require('rfr')
   , querystring = require('querystring')
   , CraigslistQuery = require('./craigslist_query');
 
@@ -12,8 +12,7 @@ class CraigslistQueryBuilder {
    * json file
    * */
   readFromFile(pathRelativeToProjectRoot) {
-    var projectRoot = path.dirname(require.main.filename);
-    var json = require(`${projectRoot}/${pathRelativeToProjectRoot}`);
+    var json = rootRelativeRequire(pathRelativeToProjectRoot);
 
     if (typeof json.region === 'string') {
       this.setLocation(json.region);
