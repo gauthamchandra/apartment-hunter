@@ -73,12 +73,23 @@ class PersistenceProvider {
       let savePromises = [];
 
       posts.forEach(post => {
-        savePromises.push(post.getModel().save());
+        // in case its an update, it shouldn't update the _id that is added when we
+        // construct the model object (trying to do otherwise results in ImmutableField error)
+        var updateObj = post.getModel().toObject();
+        delete updateObj._id;
+
+        var promise = CraigslistPostModel.findOneAndUpdate(
+            { link: post.link },
+            updateObj,
+            { upsert: true, new: true })
+        .exec();
+
+        savePromises.push(promise);
       });
 
       Promise.all(savePromises)
         .then(() => {
-          resolve();
+          resolve(posts);
         }).catch(error => {
           reject(error);
         });;
