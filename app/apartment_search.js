@@ -1,5 +1,6 @@
 var rootRelativeRequire = require('rfr')
   , env = rootRelativeRequire('env.json')
+  , es6BindAll = require('es6bindall')
   , Promise = global.Promise
   , PromiseUtil = rootRelativeRequire('app/promise_util')
   , CraigslistQueryBuilder = rootRelativeRequire('app/providers/craigslist/craigslist_query_builder')
@@ -28,6 +29,8 @@ class ApartmentSearch {
     loggingEnabled = verbose;
 
     this.query = null;
+
+    es6BindAll(this, ['_readQueryFromFile', 'search']);
   }
 
   _readQueryFromFile() {
