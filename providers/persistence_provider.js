@@ -9,7 +9,15 @@ const Promise = global.Promise
 // make sure Mongoose uses standard promises.
 mongoose.Promise = global.Promise;
 
-var isConnected = false;
+/**
+ * @see Connection#readyState
+ * */
+const MongooseConnectionState = {
+  DISCONNECTED: 0,
+  CONNECTED: 1,
+  CONNECTING: 2,
+  DISCONNECTING: 3
+};
 
 /**
  * Simple class to persist the post data to MongoDB
@@ -21,9 +29,13 @@ class PersistenceProvider {
 
   connect() {
     return new Promise((resolve, reject) => {
+      if (this.isConnected()) {
+        resolve();
+        return;
+      }
+
       mongoose.connect(`mongodb:\/\/${HOST}/${DB_NAME}`)
         .then(() => {
-          isConnected = true;
           resolve();
         }).catch(error => {
           reject(error);
@@ -32,12 +44,25 @@ class PersistenceProvider {
   }
 
   disconnect() {
-    mongoose.disconnect();
-    isConnected = false;
+    if (!this.isConnected() && !this.isConnecting()) {
+      return Promise.resolve();
+    }
+    return new Promise((resolve, reject) => {
+      mongoose.disconnect()
+        .then(() => {
+          resolve();
+        }).catch(error => {
+          reject(error);
+        });
+    });
   }
 
   isConnected() {
-    return isConnected;
+    return mongoose.connection.readyState == MongooseConnectionState.CONNECTED;
+  }
+
+  isConnecting() {
+    return mongoose.connection.readyState == MongooseConnectionState.CONNECTED;
   }
 
   /**
