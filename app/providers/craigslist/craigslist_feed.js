@@ -1,4 +1,5 @@
-var SyndicationInfo = require('../syndication_info.js');
+var rootRelativeRequire = require('rfr')
+  , SyndicationInfo = rootRelativeRequire('app/providers/syndication_info');
 
 class CraigslistFeed {
   /**

@@ -1,9 +1,10 @@
-var env = require('./env.json')
+var rootRelativeRequire = require('rfr')
+  , env = rootRelativeRequire('env.json')
   , Promise = global.Promise
-  , PromiseUtil = require('./promise_util.js')
-  , CraigslistQueryBuilder = require('./providers/craigslist/craigslist_query_builder.js')
-  , CraigslistProvider = require('./providers/craigslist/craigslist_provider.js')
-  , TransitInfoProvider = require('./providers/google/transit_info_provider.js');
+  , PromiseUtil = rootRelativeRequire('app/promise_util')
+  , CraigslistQueryBuilder = rootRelativeRequire('app/providers/craigslist/craigslist_query_builder')
+  , CraigslistProvider = rootRelativeRequire('app/providers/craigslist/craigslist_provider')
+  , TransitInfoProvider = rootRelativeRequire('app/providers/google/transit_info_provider');
 
 /**
  * A wrapper around the Console

@@ -1,10 +1,12 @@
 const Promise = global.Promise
-    , PromiseUtil = require('../promise_util.js')
+    , rootRelativeRequire = require('rfr')
+    , PromiseUtil = rootRelativeRequire('app/promise_util')
     , mongoose = require('mongoose')
-    , HOST = 'localhost' // will eventually configured via ENV var 
-    , DB_NAME = 'apartment_search'
     , dbConnection = mongoose.connection
-    , CraigslistPostModel = require('./craigslist/craigslist_post_model.js');
+    , CraigslistPostModel = rootRelativeRequire('app/providers/craigslist/craigslist_post_model');
+
+const HOST = 'localhost' // will eventually configured via ENV var 
+    , DB_NAME = 'apartment_search'
 
 // make sure Mongoose uses standard promises.
 mongoose.Promise = global.Promise;

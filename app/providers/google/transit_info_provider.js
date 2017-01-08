@@ -1,4 +1,4 @@
-var Promise = global.Promise;
+const Promise = global.Promise;
 
 class TransitInfoProvider {
   constructor(mapsApiKey) {

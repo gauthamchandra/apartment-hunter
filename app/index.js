@@ -1,10 +1,11 @@
-var PromiseUtil = require('./promise_util.js')
-  , CraigslistPostModel = require('./providers/craigslist/craigslist_post_model.js')
-  , PersistenceProvider = require('./providers/persistence_provider.js')
-  , ApartmentSearch = require('./apartment_search.js')
-  , SlackMessageBuilder = require('./notifiers/slack_message_builder.js')
-  , SlackNotifier = require('./notifiers/slack_notifier.js')
-  , env = require('./env.json');
+var rootRelativeRequire = require('rfr')
+  , PromiseUtil = rootRelativeRequire('app/promise_util')
+  , CraigslistPostModel = rootRelativeRequire('app/providers/craigslist/craigslist_post_model')
+  , PersistenceProvider = rootRelativeRequire('app/providers/persistence_provider')
+  , ApartmentSearch = rootRelativeRequire('app/apartment_search')
+  , SlackMessageBuilder = rootRelativeRequire('app/notifiers/slack_message_builder')
+  , SlackNotifier = rootRelativeRequire('app/notifiers/slack_notifier')
+  , env = rootRelativeRequire('env.json');
 
 var apartmentSearch = new ApartmentSearch(true)
   , persistenceProvider = new PersistenceProvider()

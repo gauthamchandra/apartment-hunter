@@ -2,9 +2,9 @@ var fetch = require('node-fetch')
   , Promise = global.Promise
   , cheerio = require('cheerio')
   , feedparser = require('feedparser-promised')
-  , CraigslistQuery = require('./craigslist_query.js')
-  , CraigslistFeed = require('./craigslist_feed.js')
-  , CraigslistPost = require('./craigslist_post.js');
+  , CraigslistQuery = require('./craigslist_query')
+  , CraigslistFeed = require('./craigslist_feed')
+  , CraigslistPost = require('./craigslist_post');
 
 const MAC_USER_AGENT = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/55.0.2883.95 Safari/537.36';
 

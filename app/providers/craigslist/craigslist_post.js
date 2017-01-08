@@ -1,4 +1,4 @@
-var CraigslistPostModel = require('./craigslist_post_model.js');
+var CraigslistPostModel = require('./craigslist_post_model');
 
 class CraigslistPost {
   constructor(feedElement) {

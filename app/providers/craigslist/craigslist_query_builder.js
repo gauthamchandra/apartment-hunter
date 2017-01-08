@@ -1,6 +1,6 @@
 var path = require('path')
   , querystring = require('querystring')
-  , CraigslistQuery = require('./craigslist_query.js');
+  , CraigslistQuery = require('./craigslist_query');
 
 class CraigslistQueryBuilder {
   constructor() {
