@@ -1,5 +1,4 @@
 var rootRelativeRequire = require('rfr')
-  , env = rootRelativeRequire('env.json')
   , es6BindAll = require('es6bindall')
   , log = require('npmlog')
   , Promise = global.Promise
@@ -31,7 +30,7 @@ class ApartmentSearch {
           this._readQueryFromFile();
 
           log.info(TAG, 'Constructing TransitInfoProvider...');
-          var transitInfoProvider = new TransitInfoProvider(env.GOOGLE_MAPS_API_KEY);
+          var transitInfoProvider = new TransitInfoProvider(process.env.GOOGLE_MAPS_API_KEY);
 
           log.info(TAG, 'Querying Craigslist Feed for data...');
           return new CraigslistProvider(this.query, transitInfoProvider).fetchFeed();
@@ -40,7 +39,7 @@ class ApartmentSearch {
           craigslistFeed = feed;
 
           log.info(TAG, 'Finding out the transit times for each of the posts');
-          return feed.getTransitTimesTo(env.work_address);
+          return feed.getTransitTimesTo(process.env.WORK_ADDRESS);
         },
         () => {
           var posts = craigslistFeed.getPosts();

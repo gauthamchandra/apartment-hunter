@@ -1,5 +1,5 @@
 # Anything containing personal info or API keys
-env.json
+.env
 query.json
 
 # Logs

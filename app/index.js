@@ -1,3 +1,6 @@
+// load all env variables needed by the app
+require('dotenv').config();
+
 const rootRelativeRequire = require('rfr')
     , PromiseUtil = rootRelativeRequire('app/promise_util')
     , CraigslistPostModel = rootRelativeRequire('app/providers/craigslist/craigslist_post_model')
