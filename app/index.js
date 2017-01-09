@@ -3,19 +3,10 @@ require('dotenv').config();
 
 const rootRelativeRequire = require('rfr')
     , PromiseUtil = rootRelativeRequire('app/promise_util')
-    , S3Provider = rootRelativeRequire('app/providers/s3_provider.js')
-    , CraigslistPostModel = rootRelativeRequire('app/providers/craigslist/craigslist_post_model')
-    , PersistenceProvider = rootRelativeRequire('app/providers/persistence_provider')
-    , ApartmentSearch = rootRelativeRequire('app/apartment_search')
-    , SlackMessageBuilder = rootRelativeRequire('app/notifiers/slack_message_builder')
-    , SlackNotifier = rootRelativeRequire('app/notifiers/slack_notifier')
+    , S3Provider = rootRelativeRequire('app/providers/s3_provider')
+    , SearchAndNotifyJob = rootRelativeRequire('app/search_and_notify_job')
     , log = require('npmlog')
     , TAG = 'main';
-
-var apartmentSearch = new ApartmentSearch()
-  , persistenceProvider = new PersistenceProvider()
-  , job = null
-  , fetchedPosts;
 
 const EnvironmentType = {
   LOCAL: 'dev',
@@ -40,30 +31,11 @@ new PromiseUtil().inSeries(
       log.info(TAG, 'Local environment detected. Assuming query file is here locally');
       return Promise.resolve();
     },
-    apartmentSearch.search,
-    (posts) => {
-      fetchedPosts = posts;
-
-      log.info(TAG, 'Connecting to the DB');
-      return persistenceProvider.connect();
-    },
     () => {
-      log.info(TAG, 'Connected');
-      log.info(TAG, 'Saving relevant post results to the db');
-      return persistenceProvider.createOrUpdateAll(fetchedPosts);
-    },
-    () => {
-      log.info(TAG, 'Retrieving posts updated in the last 5 minutes');
+      log.info(TAG, 'Kicking off search job every 6 hours');
 
-      const now = Date.now();
-      var FIVE_MIN_AGO = new Date(now - (1000 * 60 * 5));
-      return CraigslistPostModel.where('updatedAt').gt(FIVE_MIN_AGO).exec();
-    },
-    (posts) => {
-      log.info(TAG, 'Number of posts updated within the last 5 minutes:', posts.length);
-
-      log.info(TAG, 'Disconnecting from DB');
-      return persistenceProvider.disconnect();
+      //TODO: This should be an ENV var
+      new SearchAndNotifyJob(360).run();
     })
 .catch(error => {
   log.error(TAG, 'Encountered an error during main program execution:', error);

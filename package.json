@@ -1,9 +1,10 @@
 {
   "name": "apartment-hunter",
-  "version": "0.8.0",
+  "version": "0.9.5",
   "description": "A simple nodeJS app that helps to find apartments close to public transportation and work",
   "main": "app/index.js",
   "scripts": {
+    "prestart": "npm install",
     "start": "node app/index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -30,8 +31,13 @@
     "feedparser-promised": "^1.1.1",
     "mongoose": "^4.7.5",
     "node-fetch": "^1.6.3",
+    "node-schedule": "^1.2.0",
     "npmlog": "^4.0.2",
     "rfr": "^1.2.3",
     "s3": "^4.4.0"
+  },
+  "devDependencies": {
+    "chai": "^3.5.0",
+    "mocha": "^3.2.0"
   }
 }
