@@ -44,9 +44,6 @@ class ApartmentSearch {
         () => {
           var posts = craigslistFeed.getPosts();
 
-          log.info(TAG, 'Sorting results by price');
-          craigslistFeed.sortByPrice();
-
           log.info(TAG, 'Filtering out transit times > 45 minutes');
           posts = craigslistFeed.getPosts()
             .filter(post => {

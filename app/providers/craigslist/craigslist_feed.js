@@ -41,22 +41,6 @@ class CraigslistFeed {
     return items;
   }
 
-  sortByPrice() {
-    return this._items.sort((post1, post2) => {
-      var price1 = parseInt(post1.price.replace('$', ''), 10)
-        , price2 = parseInt(post2.price.replace('$', ''), 10);
-
-      if (price1 > price2) {
-        return 1;
-      }
-      else if (price1 < price2) {
-        return -1;
-      }
-
-      return 0;
-    });
-  }
-
   getPosts() {
     return this._items;
   }
