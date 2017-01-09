@@ -3,12 +3,12 @@ require('dotenv').config();
 
 const rootRelativeRequire = require('rfr')
     , PromiseUtil = rootRelativeRequire('app/promise_util')
+    , S3Provider = rootRelativeRequire('app/providers/s3_provider.js')
     , CraigslistPostModel = rootRelativeRequire('app/providers/craigslist/craigslist_post_model')
     , PersistenceProvider = rootRelativeRequire('app/providers/persistence_provider')
     , ApartmentSearch = rootRelativeRequire('app/apartment_search')
     , SlackMessageBuilder = rootRelativeRequire('app/notifiers/slack_message_builder')
     , SlackNotifier = rootRelativeRequire('app/notifiers/slack_notifier')
-    , env = rootRelativeRequire('env.json')
     , log = require('npmlog')
     , TAG = 'main';
 
@@ -17,7 +17,29 @@ var apartmentSearch = new ApartmentSearch()
   , job = null
   , fetchedPosts;
 
+const EnvironmentType = {
+  LOCAL: 'dev',
+  HOSTED: 'hosted'
+};
+
 new PromiseUtil().inSeries(
+    () => {
+      log.info(TAG, 'Reading environment type...');
+
+      if (process.env.APP_ENV !== EnvironmentType.LOCAL) {
+        log.info(TAG, 'Non local env detected. Pulling Search Query config down from S3');
+
+        const s3Provider = new S3Provider(
+            process.env.S3_ACCESS_KEY,
+            process.env.S3_SECRET,
+            process.env.S3_REGION);
+
+        return s3Provider.downloadFile(process.env.S3_BUCKET, 'query.json', 'query.json');
+      }
+
+      log.info(TAG, 'Local environment detected. Assuming query file is here locally');
+      return Promise.resolve();
+    },
     apartmentSearch.search,
     (posts) => {
       fetchedPosts = posts;
