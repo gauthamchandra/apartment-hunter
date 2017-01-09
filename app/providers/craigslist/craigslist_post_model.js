@@ -18,6 +18,10 @@ const CraigslistPostSchema = new Schema({
     unique: true,
     required: true
   },
+  price: {
+    type: Number,
+    required: true
+  },
   latitude: Number,
   longitude: Number,
   markedSeen: Boolean,

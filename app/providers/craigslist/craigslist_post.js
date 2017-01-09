@@ -46,6 +46,7 @@ class CraigslistPost {
       searchQuery: this.getOriginalQuery(),
       title: this.title,
       body: this.getBody(),
+      price: this.price,
       link: this.link,
       latitude: this.location.lat,
       longitude: this.location.lng,
